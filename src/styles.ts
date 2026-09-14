@@ -85,6 +85,19 @@ export function getStyles(): string {
       width: 20px !important;
       height: 20px !important;
     }
+    .pip-url-clear {
+      font-size: 12px !important;
+      width: 20px !important;
+      height: 20px !important;
+      color: #f38ba8 !important;
+    }
+    .pip-url-clear:hover {
+      background: #f38ba8 !important;
+      color: #1e1e2e !important;
+    }
+    .hidden {
+      display: none !important;
+    }
     .pip-viewport-switch {
       display: flex;
       gap: 2px;

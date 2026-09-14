@@ -7,23 +7,40 @@ export function refreshPreview(
 ): void {
   if (!state.visible || !elements.iframe) return;
 
-  // Handle URL mode (Local Dev Server, e.g. http://localhost:3000)
-  if (state.urlMode) {
-    renderUrl(elements, state);
+  const { urlInput } = elements;
+  const editorManager = (window as any).editorManager;
+  const activeFile = editorManager?.activeFile;
+  const filename = activeFile?.filename || activeFile?.name || "";
+
+  // Priority 1: If NOT in urlMode or URL is empty, default to active HTML file preview!
+  if (!state.urlMode || !state.url.trim()) {
+    if (urlInput && document.activeElement !== urlInput) {
+      urlInput.value = "";
+      urlInput.placeholder = filename ? `📄 ${filename}` : "Enter URL (or leave empty for HTML file)...";
+    }
+    renderActiveFile(elements, state, editorManager, activeFile, filename);
     return;
   }
 
-  // Handle File mode
-  const editorManager = (window as any).editorManager;
-  if (!editorManager) return;
+  // Priority 2: URL mode active with valid URL
+  if (urlInput && document.activeElement !== urlInput) {
+    urlInput.value = state.url;
+  }
+  renderUrl(elements, state);
+}
 
-  const activeFile = editorManager.activeFile;
-  if (!activeFile) {
+function renderActiveFile(
+  elements: PipElements,
+  state: PipState,
+  editorManager: any,
+  activeFile: any,
+  filename: string
+): void {
+  if (!editorManager || !activeFile) {
     showEmptyState(elements, true, "Open an HTML file to preview");
     return;
   }
 
-  const filename = activeFile.filename || activeFile.name || "";
   const content = getEditorContent(editorManager);
 
   const isHtmlExtension = /\.(html?|htm)$/i.test(filename);
@@ -34,7 +51,7 @@ export function refreshPreview(
   );
 
   if (!isHtmlExtension && !isHtmlContent) {
-    showEmptyState(elements, true, "Open an HTML file or switch to URL mode");
+    showEmptyState(elements, true, "Open an HTML file to preview");
     return;
   }
 

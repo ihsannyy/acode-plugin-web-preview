@@ -13,8 +13,9 @@ export function createPipWindow(state: PipState): PipElements | null {
     <div class="pip-header">
       <span class="pip-title">Web Preview</span>
       <div class="pip-url-bar active">
-        <input type="text" class="pip-url-input" value="${state.url || ""}" placeholder="http://localhost:3000" spellcheck="false" />
-        <button class="pip-btn pip-url-go" title="Go / Refresh">↵</button>
+        <input type="text" class="pip-url-input" value="${state.urlMode && state.url ? state.url : ""}" placeholder="Enter URL (or leave empty for HTML file)..." spellcheck="false" />
+        <button class="pip-btn pip-url-go ${state.urlMode && state.url ? "hidden" : ""}" title="Go to URL">↵</button>
+        <button class="pip-btn pip-url-clear ${state.urlMode && state.url ? "" : "hidden"}" title="Clear URL & return to HTML File preview">✕</button>
       </div>
       <div class="pip-viewport-switch">
         <button class="pip-vp-btn ${state.viewport === "mobile" ? "active" : ""}" data-vp="mobile" title="Mobile (375px)">

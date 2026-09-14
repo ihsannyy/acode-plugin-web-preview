@@ -12,7 +12,7 @@ const DEFAULT_STATE: PipState = {
   height: 250,
   viewport: "mobile",
   urlMode: false,
-  url: "http://localhost:3000",
+  url: "",
 };
 
 export function loadState(): PipState {

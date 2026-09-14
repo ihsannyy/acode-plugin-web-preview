@@ -18,6 +18,23 @@ export function setupControls(
   pip.querySelector(".pip-minimize")?.addEventListener("click", callbacks.onMinimize);
   pip.querySelector(".pip-maximize")?.addEventListener("click", callbacks.onMaximize);
 
+  const urlClearBtn = pip.querySelector(".pip-url-clear");
+  const urlGoBtn = pip.querySelector(".pip-url-go");
+
+  const clearUrlMode = () => {
+    state.urlMode = false;
+    state.url = "";
+    if (urlInput) {
+      urlInput.value = "";
+    }
+    urlClearBtn?.classList.add("hidden");
+    urlGoBtn?.classList.remove("hidden");
+    callbacks.onSaveState();
+    callbacks.onRefresh();
+  };
+
+  urlClearBtn?.addEventListener("click", clearUrlMode);
+
   // URL input enter key & Go button
   const handleUrlSubmit = () => {
     if (!urlInput) return;
@@ -27,9 +44,13 @@ export function setupControls(
         val = `http://${val}`;
         urlInput.value = val;
       }
+      state.urlMode = true;
       state.url = val;
+      urlClearBtn?.classList.remove("hidden");
+      urlGoBtn?.classList.add("hidden");
     } else {
-      state.url = "";
+      clearUrlMode();
+      return;
     }
     callbacks.onSaveState();
     callbacks.onRefresh();
@@ -42,7 +63,7 @@ export function setupControls(
     }
   });
 
-  pip.querySelector(".pip-url-go")?.addEventListener("click", handleUrlSubmit);
+  urlGoBtn?.addEventListener("click", handleUrlSubmit);
 
   // Reload button
   pip.querySelector(".pip-reload")?.addEventListener("click", () => {
