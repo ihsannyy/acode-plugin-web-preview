@@ -8,10 +8,10 @@ export function registerSideButton(
     const SideButton = (window as any).acode.require("sideButton");
     if (!SideButton) return null;
     const btn = SideButton({
-      text: "Web Preview",
-      icon: "eye",
+      text: "Preview",
+      icon: "",
       onclick: toggle,
-      backgroundColor: "var(--accent-color, #89b4fa)",
+      backgroundColor: "#89b4fa",
       textColor: "#1e1e2e",
     });
     btn.show();
