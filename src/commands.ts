@@ -7,7 +7,7 @@ export function registerSideButton(
   try {
     const acode = (window as any).acode;
     if (!acode) return null;
-    const SideButton = acode.require("sideButton");
+    const SideButton = acode.require("sidebutton");
     if (!SideButton) return null;
     const btn = SideButton({
       text: "Web Preview",
