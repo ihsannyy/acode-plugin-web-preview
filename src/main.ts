@@ -7,12 +7,10 @@ import { setupControls, toggleMinimize, toggleMaximize, forceClose } from "./con
 import { setupViewport } from "./viewport";
 import { refreshPreview } from "./preview";
 import { attachEditorListeners } from "./listeners";
-import { registerHeaderButton, registerCommands } from "./commands";
 
 class WebPreviewPip {
   private elements: PipElements | null = null;
   private state: PipState;
-  private headerBtn: { remove: () => void } | null = null;
   private cleanupListeners: (() => void) | null = null;
 
   constructor() {
@@ -20,8 +18,12 @@ class WebPreviewPip {
   }
 
   async init(_page: Acode.WCPage, _cacheFile: Acode.FileSystem, _cacheFileUrl: string): Promise<void> {
+    console.log("Web Preview PiP: init called");
     this.elements = createPipWindow(this.state);
-    if (!this.elements) return;
+    if (!this.elements) {
+      console.error("Web Preview PiP: createPipWindow returned null");
+      return;
+    }
 
     applyPosition(this.elements, this.state);
     setupDrag(this.elements, this.state, () => saveState(this.state));
@@ -35,28 +37,22 @@ class WebPreviewPip {
       refreshPreview(this.elements!, this.state);
     });
     this.cleanupListeners = attachEditorListeners(this.elements, this.state);
-    this.headerBtn = registerHeaderButton(() => this.toggle());
-    registerCommands(this.elements, this.state, {
-      onToggle: () => this.toggle(),
-      onForceClose: () => this.forceClose(),
-      onForceReset: () => this.forceReset(),
-    });
+
+    // Force show PiP for testing
+    this.state.visible = true;
+    this.elements.pip.style.display = "";
+    applyPosition(this.elements, this.state);
+    saveState(this.state);
 
     try {
       const toast = (window as any).acode.require("toast");
-      if (toast) toast("Web Preview PiP loaded!", 3000);
+      if (toast) toast("Web Preview PiP v1.0.8 loaded!", 5000);
     } catch { /* ignore */ }
   }
 
   async destroy(): Promise<void> {
     this.cleanupListeners?.();
     if (this.elements) removePipWindow(this.elements);
-    this.headerBtn?.remove();
-  }
-
-  toggle(): void {
-    if (this.state.visible) this.hide();
-    else this.show();
   }
 
   show(): void {
@@ -88,11 +84,13 @@ class WebPreviewPip {
 }
 
 if (window.acode) {
+  console.log("Web Preview PiP: window.acode found");
   const acodePlugin = new WebPreviewPip();
 
   acode.setPluginInit(
     plugin.id,
     async (baseUrl, $page, { cacheFileUrl, cacheFile }) => {
+      console.log("Web Preview PiP: setPluginInit callback called");
       (acodePlugin as any)["baseUrl"] = baseUrl.endsWith("/") ? baseUrl : `${baseUrl}/`;
       await acodePlugin.init($page, cacheFile, cacheFileUrl);
     },
@@ -101,4 +99,6 @@ if (window.acode) {
   acode.setPluginUnmount(plugin.id, () => {
     void acodePlugin.destroy();
   });
+} else {
+  console.error("Web Preview PiP: window.acode not found!");
 }
