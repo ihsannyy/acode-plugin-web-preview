@@ -127,9 +127,3 @@ acode-plugin-web-preview/
 ## 📜 License
 
 Distributed under the **MIT License**. See `LICENSE` for details.
-
----
-
-<div align="center">
-Made with ❤️ for the Acode Community
-</div>
