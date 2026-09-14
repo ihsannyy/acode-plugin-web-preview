@@ -1,5 +1,10 @@
 # Changelog
 
+## 1.0.3
+
+- Updated: Author info and repository URL
+- Updated: Modular code structure (split into separate files)
+
 ## 1.0.2
 
 - Fixed: PiP window covering entire screen after clearing app cache
