@@ -5,7 +5,9 @@ export function registerSideButton(
   toggle: () => void
 ): { show: () => void; hide: () => void } | null {
   try {
-    const SideButton = (window as any).acode.require("sideButton");
+    const acode = (window as any).acode;
+    if (!acode) return null;
+    const SideButton = acode.require("sideButton");
     if (!SideButton) return null;
     const btn = SideButton({
       text: "Web Preview",
@@ -14,9 +16,13 @@ export function registerSideButton(
       backgroundColor: "var(--accent-color, #89b4fa)",
       textColor: "#1e1e2e",
     });
-    btn.show();
-    return btn;
-  } catch {
+    if (btn) {
+      btn.show();
+      return btn;
+    }
+    return null;
+  } catch (e) {
+    console.error("Web Preview PiP: Failed to create side button", e);
     return null;
   }
 }
