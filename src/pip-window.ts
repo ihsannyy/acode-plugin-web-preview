@@ -1,0 +1,60 @@
+import type { PipState, PipElements } from "./types";
+import { getStyles } from "./styles";
+
+export function createPipWindow(state: PipState): PipElements | null {
+  const existing = document.getElementById("web-preview-pip");
+  if (existing) return null;
+
+  const pip = document.createElement("div");
+  pip.id = "web-preview-pip";
+  pip.style.display = "none";
+  pip.innerHTML = `
+    <style>${getStyles()}</style>
+    <div class="pip-header">
+      <span class="pip-title">Web Preview</span>
+      <div class="pip-viewport-switch">
+        <button class="pip-vp-btn active" data-vp="mobile" title="Mobile (375px)">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="5" y="2" width="14" height="20" rx="2"/><line x1="12" y1="18" x2="12" y2="18"/></svg>
+        </button>
+        <button class="pip-vp-btn" data-vp="tablet" title="Tablet (768px)">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="4" y="2" width="16" height="20" rx="2"/><line x1="12" y1="18" x2="12" y2="18"/></svg>
+        </button>
+        <button class="pip-vp-btn" data-vp="desktop" title="Desktop (1280px)">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="3" width="20" height="14" rx="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/></svg>
+        </button>
+      </div>
+      <div class="pip-controls">
+        <button class="pip-btn pip-minimize" title="Minimize">_</button>
+        <button class="pip-btn pip-maximize" title="Maximize">□</button>
+        <button class="pip-btn pip-close" title="Close">×</button>
+      </div>
+    </div>
+    <div class="pip-body">
+      <iframe id="pip-iframe" sandbox="allow-scripts allow-same-origin allow-modals allow-forms allow-popups"></iframe>
+      <div class="pip-empty-state">
+        <p>Open an HTML file to preview</p>
+      </div>
+    </div>
+  `;
+
+  document.body.appendChild(pip);
+
+  const elements: PipElements = {
+    pip,
+    iframe: pip.querySelector("#pip-iframe") as HTMLIFrameElement,
+    header: pip.querySelector(".pip-header") as HTMLElement,
+    title: pip.querySelector(".pip-title") as HTMLElement,
+  };
+
+  if (state.visible) pip.style.display = "";
+  if (state.minimized) pip.classList.add("minimized");
+  if (state.maximized) pip.classList.add("maximized");
+
+  return elements;
+}
+
+export function removePipWindow(elements: PipElements | null): void {
+  if (elements?.pip) {
+    elements.pip.remove();
+  }
+}

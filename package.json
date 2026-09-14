@@ -1,0 +1,22 @@
+{
+  "name": "acode-plugin-web-preview-pip",
+  "version": "1.0.2",
+  "description": "Picture-in-Picture live web preview for Acode editor",
+  "main": "dist/main.js",
+  "repository": "",
+  "author": "User",
+  "license": "MIT",
+  "dependencies": {
+    "acode-plugin-types": "^1.12.9"
+  },
+  "devDependencies": {
+    "esbuild-wasm": "^0.25.0",
+    "jszip": "^3.10.1",
+    "typescript": "^5.9.3"
+  },
+  "scripts": {
+    "dev": "node esbuild.config.mjs --serve",
+    "build": "node ./node_modules/typescript/bin/tsc --noEmit && node esbuild.config.mjs",
+    "typecheck": "node ./node_modules/typescript/bin/tsc --noEmit"
+  }
+}
