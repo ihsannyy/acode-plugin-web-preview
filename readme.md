@@ -1,79 +1,135 @@
-# Web Preview PiP
+<div align="center">
 
-Picture-in-Picture live web preview plugin for [Acode](https://acode.app) editor.
+# 🌐 Web Preview PiP for Acode
 
-![Version](https://img.shields.io/badge/version-1.1.0-blue)
-![License](https://img.shields.io/badge/license-MIT-green)
-![Acode](https://img.shields.io/badge/Acode-v290+-orange)
+**Picture-in-Picture Live Web Preview Plugin for [Acode Editor](https://acode.app)**
 
-## Features
+[![Version](https://img.shields.io/badge/version-1.1.0-89b4fa?style=for-the-badge&logo=semver)](plugin.json)
+[![Acode](https://img.shields.io/badge/Acode-v290+-fab387?style=for-the-badge&logo=android)](https://acode.app)
+[![License](https://img.shields.io/badge/license-MIT-a6e3a1?style=for-the-badge)](LICENSE)
+[![TypeScript](https://img.shields.io/badge/TypeScript-5.9-3178c6?style=for-the-badge&logo=typescript)](https://www.typescriptlang.org/)
 
-- **Floating Preview Window** - Small overlay window that stays on top of your editor
-- **Live Preview** - Auto-updates when you edit HTML files
-- **Draggable** - Move the preview window anywhere on screen
-- **Minimize/Maximize** - Collapse to small header or expand to full screen
-- **Viewport Modes** - Preview in mobile (375px), tablet (768px), or desktop (1280px)
-- **Persistent State** - Window position and settings saved across sessions
-- **Keyboard Shortcuts** - Quick access with keyboard combinations
+---
 
-## Installation
+A modern, highly customizable floating Picture-in-Picture (PiP) web preview plugin designed for **Acode Editor**. Inspect, test, and render HTML/CSS/JS live as you type without switching apps.
 
-### From Acode Plugin Manager
+</div>
 
-1. Open Acode
-2. Go to **Settings** → **Plugins**
-3. Tap **+** → **Local** or **Remote**
-4. Select or enter the plugin zip file
+<br/>
 
-### From Source
+## 🌟 Key Features
+
+| Feature | Description |
+| :--- | :--- |
+| 🪟 **Floating Picture-in-Picture** | Stays overlayed on top of your editor for seamless side-by-side editing. |
+| ⚡ **Live Real-Time Sync** | Instantly re-renders changes as you type across Ace Editor & CodeMirror. |
+| 📐 **Dynamic Window Resizing** | Drag edges or bottom-right corner handles to resize freely (Windows OS style). |
+| 📱 **Viewport Preset Modes** | Quick toggle between **Mobile** (375px), **Tablet** (768px), and **Desktop** (1280px). |
+| 🖐️ **Draggable Header** | Move the floating preview anywhere across your mobile screen. |
+| 💾 **Persistent Workspace** | Remembers window positions, sizes, and viewport modes across sessions. |
+| ⌨️ **Command Palette & Hotkeys** | Full keyboard shortcut support for superfast toggling and resetting. |
+
+<br/>
+
+## 🚀 Installation
+
+### Option 1: Install Pre-built Package (`plugin.zip`)
+
+1. Download or locate `plugin.zip` from this repository.
+2. Open **Acode Editor** on your device.
+3. Navigate to **Settings** ⚙️ → **Plugins**.
+4. Tap **+** (Add) → Choose **Local**.
+5. Select `plugin.zip` to install.
+
+### Option 2: Build From Source
+
+Make sure you have [Node.js](https://nodejs.org) or [Bun](https://bun.sh) installed.
 
 ```bash
+# Clone repository
 git clone https://github.com/ihsannyy/acode-plugin-web-preview.git
 cd acode-plugin-web-preview
-bun install
-bun run build
+
+# Install dependencies
+npm install
+
+# Build production package
+npm run build
 ```
 
-Then install the generated `plugin.zip` via Acode Plugin Manager.
+The compiled `plugin.zip` will be generated in the root directory.
 
-## Usage
+<br/>
 
-1. Open an HTML file in the editor
-2. Click the **eye icon** in the sidebar, or use the keyboard shortcut below
+## ⌨️ Keyboard Shortcuts & Commands
 
-### Keyboard Shortcuts
+You can execute actions via hotkeys or Acode's Command Palette:
 
-| Shortcut | Action |
-|----------|--------|
-| `Ctrl+Shift+V` | Toggle preview window |
-| `Ctrl+Shift+Q` | Force close preview |
-| `Ctrl+Shift+;` | Reset & close (fix bugs) |
+| Shortcut (Win / Linux) | Shortcut (macOS) | Action |
+| :--- | :--- | :--- |
+| `Ctrl + Shift + P` | `Cmd + Shift + P` | Toggle Web Preview PiP |
+| `Ctrl + Shift + X` | `Cmd + Shift + X` | Force Close Preview Window |
+| `Ctrl + Shift + R` | `Cmd + Shift + R` | Reset Position & Window State |
 
-### Viewport Modes
+<br/>
 
-Click the device icons in the preview header to switch between:
+## 📐 Viewport Presets
 
-| Icon | Mode | Width |
-|------|------|-------|
-| Phone | Mobile | 375px |
-| Tablet | Tablet | 768px |
-| Monitor | Desktop | 1280px |
+Switch viewports instantly with header icons:
 
-## Development
+| Icon | Mode | Width | Purpose |
+| :---: | :--- | :---: | :--- |
+| 📱 | **Mobile** | `375px` | Test smartphone responsive layouts |
+| 📑 | **Tablet** | `768px` | Test iPad and tablet screens |
+| 💻 | **Desktop** | `1280px` | Test desktop monitors and broad layouts |
+
+*(You can also drag edges or corner handles for any custom resolution)*
+
+<br/>
+
+## 🛠️ Development & Building
 
 ```bash
-bun install
-bun run dev        # Start dev server with watch
-bun run build      # Production build
-bun run typecheck  # Type check only
+# Type check TypeScript files
+npm run typecheck
+
+# Start development server with live watch mode
+npm run dev
+
+# Build production bundle & zip package
+npm run build
 ```
 
-## Tech Stack
+<br/>
 
-- TypeScript
-- esbuild (bundling)
-- Acode Plugin API
+## 📁 Project Architecture
 
-## License
+```
+acode-plugin-web-preview/
+├── src/
+│   ├── main.ts        # Plugin lifecycle entry point
+│   ├── pip-window.ts  # DOM construction & window element management
+│   ├── preview.ts     # Multi-editor HTML extraction & iframe rendering
+│   ├── drag.ts        # Mouse & touch window dragging + edge resizing
+│   ├── styles.ts      # UI styling & CSS tokens
+│   ├── commands.ts    # Sidebar button registration & hotkeys
+│   ├── listeners.ts   # Real-time editor event listeners
+│   ├── viewport.ts    # Device resolution presets
+│   ├── state.ts       # LocalStorage persistence manager
+│   └── types.ts       # TypeScript interfaces
+├── plugin.json        # Acode plugin manifest
+├── pack-zip.js        # Packaging script
+└── esbuild.config.mjs # Bundler setup
+```
 
-MIT
+<br/>
+
+## 📜 License
+
+Distributed under the **MIT License**. See `LICENSE` for details.
+
+---
+
+<div align="center">
+Made with ❤️ for the Acode Community
+</div>
