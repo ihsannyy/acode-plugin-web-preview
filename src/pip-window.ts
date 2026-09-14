@@ -3,7 +3,7 @@ import { getStyles } from "./styles";
 
 export function createPipWindow(state: PipState): PipElements | null {
   const existing = document.getElementById("web-preview-pip");
-  if (existing) return null;
+  if (existing) existing.remove();
 
   const pip = document.createElement("div");
   pip.id = "web-preview-pip";

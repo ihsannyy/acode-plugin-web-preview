@@ -41,6 +41,11 @@ class WebPreviewPip {
       onForceClose: () => this.forceClose(),
       onForceReset: () => this.forceReset(),
     });
+
+    try {
+      const toast = (window as any).acode.require("toast");
+      if (toast) toast("Web Preview PiP loaded!", 3000);
+    } catch { /* ignore */ }
   }
 
   async destroy(): Promise<void> {

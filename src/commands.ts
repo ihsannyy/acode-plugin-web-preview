@@ -4,14 +4,14 @@ export function registerHeaderButton(
   toggle: () => void
 ): { remove: () => void } | null {
   try {
+    const existingBtn = document.querySelector('[action="web-preview"]');
+    if (existingBtn) existingBtn.remove();
+
     const btn = document.createElement("span");
     btn.className = "icon eye";
     btn.setAttribute("action", "web-preview");
     btn.title = "Web Preview PiP";
     btn.style.cssText = "padding:0 8px;cursor:pointer;user-select:none;";
-
-    const existingBtn = document.querySelector('[action="web-preview"]');
-    if (existingBtn) existingBtn.remove();
 
     btn.onclick = (e) => {
       e.preventDefault();
@@ -19,13 +19,18 @@ export function registerHeaderButton(
       toggle();
     };
 
-    const header =
-      document.querySelector("#root")?.querySelector("header") ||
-      document.querySelector("header");
-    if (!header) return null;
+    const header = document.querySelector("header");
+    if (!header) {
+      console.warn("Web Preview PiP: No header found");
+      return null;
+    }
 
-    const tail = header.querySelector(".tail") || header;
-    tail.insertBefore(btn, tail.firstChild);
+    const tail = header.querySelector(".tail");
+    if (tail) {
+      tail.insertBefore(btn, tail.firstChild);
+    } else {
+      header.appendChild(btn);
+    }
 
     return { remove: () => btn.remove() };
   } catch (e) {
