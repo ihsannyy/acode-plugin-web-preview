@@ -12,11 +12,6 @@ export function createPipWindow(state: PipState): PipElements | null {
     <style>${getStyles()}</style>
     <div class="pip-header">
       <span class="pip-title">Web Preview</span>
-      <div class="pip-url-bar active">
-        <input type="text" class="pip-url-input" value="${state.urlMode && state.url ? state.url : ""}" placeholder="Enter URL (or leave empty for HTML file)..." spellcheck="false" />
-        <button class="pip-btn pip-url-go ${state.urlMode && state.url ? "hidden" : ""}" title="Go to URL">↵</button>
-        <button class="pip-btn pip-url-clear ${state.urlMode && state.url ? "" : "hidden"}" title="Clear URL & return to HTML File preview">✕</button>
-      </div>
       <div class="pip-viewport-switch">
         <button class="pip-vp-btn ${state.viewport === "mobile" ? "active" : ""}" data-vp="mobile" title="Mobile (375px)">
           <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="5" y="2" width="14" height="20" rx="2"/><line x1="12" y1="18" x2="12" y2="18"/></svg>
@@ -34,6 +29,13 @@ export function createPipWindow(state: PipState): PipElements | null {
         <button class="pip-btn pip-minimize" title="Minimize">_</button>
         <button class="pip-btn pip-maximize" title="Maximize">□</button>
         <button class="pip-btn pip-close" title="Close">×</button>
+      </div>
+    </div>
+    <div class="pip-sub-header">
+      <div class="pip-url-bar active">
+        <input type="text" class="pip-url-input" value="${state.urlMode && state.url ? state.url : ""}" placeholder="Enter URL (or leave empty for HTML file)..." spellcheck="false" />
+        <button class="pip-btn pip-url-go ${state.urlMode && state.url ? "hidden" : ""}" title="Go to URL">↵</button>
+        <button class="pip-btn pip-url-clear ${state.urlMode && state.url ? "" : "hidden"}" title="Clear URL & return to HTML File preview">✕</button>
       </div>
     </div>
     <div class="pip-body">

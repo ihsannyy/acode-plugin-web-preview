@@ -39,14 +39,16 @@ export function getStyles(): string {
     .pip-header {
       display: flex;
       align-items: center;
+      justify-content: space-between;
       gap: 6px;
-      padding: 6px 8px;
+      padding: 4px 8px;
       background: #181825;
       cursor: move;
       user-select: none;
       -webkit-user-select: none;
-      height: 34px;
+      height: 32px;
       box-sizing: border-box;
+      border-bottom: 1px solid #313244;
     }
     .pip-title {
       font-size: 11px;
@@ -54,16 +56,23 @@ export function getStyles(): string {
       white-space: nowrap;
       color: #a6adc8;
     }
+    .pip-sub-header {
+      display: flex;
+      align-items: center;
+      padding: 3px 6px;
+      background: #1e1e2e;
+      border-bottom: 1px solid #313244;
+    }
     .pip-url-bar {
       display: flex;
       flex: 1;
-      gap: 2px;
+      gap: 4px;
       align-items: center;
-      min-width: 60px;
+      width: 100%;
     }
     .pip-url-input {
-      width: 100%;
-      background: #313244;
+      flex: 1;
+      background: #181825;
       border: 1px solid #45475a;
       border-radius: 4px;
       color: #cdd6f4;
@@ -100,7 +109,8 @@ export function getStyles(): string {
     }
     .pip-viewport-switch {
       display: flex;
-      gap: 2px;
+      gap: 4px;
+      align-items: center;
     }
     .pip-vp-btn {
       background: transparent;
