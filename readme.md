@@ -2,7 +2,7 @@
 
 Picture-in-Picture live web preview plugin for [Acode](https://acode.app) editor.
 
-![Version](https://img.shields.io/badge/version-1.0.0-blue)
+![Version](https://img.shields.io/badge/version-1.0.2-blue)
 ![License](https://img.shields.io/badge/license-MIT-green)
 ![Acode](https://img.shields.io/badge/Acode-v290+-orange)
 
@@ -28,8 +28,8 @@ Picture-in-Picture live web preview plugin for [Acode](https://acode.app) editor
 ### From Source
 
 ```bash
-git clone https://github.com/yourusername/acode-plugin-web-preview-pip.git
-cd acode-plugin-web-preview-pip
+git clone https://github.com/ihsannyy/acode-plugin-web-preview.git
+cd acode-plugin-web-preview
 bun install
 bun run build
 ```
