@@ -7,12 +7,12 @@ import { setupControls, toggleMinimize, toggleMaximize, forceClose } from "./con
 import { setupViewport } from "./viewport";
 import { refreshPreview } from "./preview";
 import { attachEditorListeners } from "./listeners";
-import { registerSidebarApp, registerCommands } from "./commands";
+import { registerHeaderButton, registerCommands } from "./commands";
 
 class WebPreviewPip {
   private elements: PipElements | null = null;
   private state: PipState;
-  private sidebarApp: { remove: () => void } | null = null;
+  private headerBtn: { remove: () => void } | null = null;
   private cleanupListeners: (() => void) | null = null;
 
   constructor() {
@@ -35,7 +35,7 @@ class WebPreviewPip {
       refreshPreview(this.elements!, this.state);
     });
     this.cleanupListeners = attachEditorListeners(this.elements, this.state);
-    this.sidebarApp = registerSidebarApp(() => this.toggle());
+    this.headerBtn = registerHeaderButton(() => this.toggle());
     registerCommands(this.elements, this.state, {
       onToggle: () => this.toggle(),
       onForceClose: () => this.forceClose(),
@@ -46,7 +46,7 @@ class WebPreviewPip {
   async destroy(): Promise<void> {
     this.cleanupListeners?.();
     if (this.elements) removePipWindow(this.elements);
-    this.sidebarApp?.remove();
+    this.headerBtn?.remove();
   }
 
   toggle(): void {

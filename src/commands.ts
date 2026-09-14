@@ -1,39 +1,35 @@
 import type { PipElements, PipState } from "./types";
 
-export function registerSidebarApp(
+export function registerHeaderButton(
   toggle: () => void
 ): { remove: () => void } | null {
   try {
-    const acode = (window as any).acode;
-    if (!acode) return null;
-    const sideBarApps = acode.require("sidebarApps");
-    if (!sideBarApps) return null;
+    const btn = document.createElement("span");
+    btn.className = "icon eye";
+    btn.setAttribute("action", "web-preview");
+    btn.title = "Web Preview PiP";
+    btn.style.cssText = "padding:0 8px;cursor:pointer;user-select:none;";
 
-    sideBarApps.add(
-      "eye",
-      "web-preview-pip",
-      "Web Preview",
-      (container: HTMLElement) => {
-        container.innerHTML = `<div style="padding:8px;text-align:center;cursor:pointer;">
-          <span class="icon eye" style="font-size:24px;"></span>
-          <div style="font-size:11px;margin-top:4px;">Preview</div>
-        </div>`;
-        container.style.cursor = "pointer";
-        container.addEventListener("click", toggle);
-      },
-      false,
-      () => {}
-    );
+    const existingBtn = document.querySelector('[action="web-preview"]');
+    if (existingBtn) existingBtn.remove();
 
-    return {
-      remove: () => {
-        try {
-          sideBarApps.remove("web-preview-pip");
-        } catch { /* ignore */ }
-      },
+    btn.onclick = (e) => {
+      e.preventDefault();
+      e.stopPropagation();
+      toggle();
     };
+
+    const header =
+      document.querySelector("#root")?.querySelector("header") ||
+      document.querySelector("header");
+    if (!header) return null;
+
+    const tail = header.querySelector(".tail") || header;
+    tail.insertBefore(btn, tail.firstChild);
+
+    return { remove: () => btn.remove() };
   } catch (e) {
-    console.error("Web Preview PiP: Failed to register sidebar app", e);
+    console.error("Web Preview PiP: Failed to create header button", e);
     return null;
   }
 }
