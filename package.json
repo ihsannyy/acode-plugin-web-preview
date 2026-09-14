@@ -3,8 +3,8 @@
   "version": "1.0.2",
   "description": "Picture-in-Picture live web preview for Acode editor",
   "main": "dist/main.js",
-  "repository": "",
-  "author": "User",
+  "repository": "https://github.com/ihsannyy/acode-plugin-web-preview",
+  "author": "ihsannyy",
   "license": "MIT",
   "dependencies": {
     "acode-plugin-types": "^1.12.9"
