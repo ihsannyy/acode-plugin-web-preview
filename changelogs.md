@@ -1,5 +1,12 @@
 # Changelog
 
+## 1.1.0
+
+- Fixed: Sidebar button click not showing window (CSS display bug)
+- Fixed: Multi-editor support for Ace Editor & CodeMirror document extraction
+- Added: Window drag resizing (right edge, bottom edge, and bottom-right corner handles)
+- Added: Pointer-events lock during drag and resize
+
 ## 1.0.3
 
 - Updated: Author info and repository URL

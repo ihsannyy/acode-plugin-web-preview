@@ -16,16 +16,42 @@ export function refreshPreview(
     return;
   }
 
-  const filename = activeFile.filename || "";
-  if (!/\.(html?|htm)$/i.test(filename)) {
+  const filename = activeFile.filename || activeFile.name || "";
+  const content = getEditorContent(editorManager);
+
+  const isHtmlExtension = /\.(html?|htm)$/i.test(filename);
+  const isHtmlContent = typeof content === "string" && (
+    content.trim().toLowerCase().startsWith("<!doctype html") ||
+    content.trim().toLowerCase().startsWith("<html") ||
+    /<[a-z][\s\S]*>/i.test(content)
+  );
+
+  if (!isHtmlExtension && !isHtmlContent) {
     showEmptyState(elements, true);
     return;
   }
 
   showEmptyState(elements, false);
-  const doc = editorManager.editor?.state?.doc;
-  if (!doc) return;
-  renderToIframe(elements, state, doc.toString());
+  renderToIframe(elements, state, content || "");
+}
+
+function getEditorContent(editorManager: any): string | null {
+  if (!editorManager) return null;
+  try {
+    if (typeof editorManager.editor?.getValue === "function") {
+      return editorManager.editor.getValue();
+    }
+    if (typeof editorManager.activeFile?.session?.getValue === "function") {
+      return editorManager.activeFile.session.getValue();
+    }
+    if (editorManager.editor?.state?.doc) {
+      return editorManager.editor.state.doc.toString();
+    }
+    if (typeof editorManager.activeFile?.content === "string") {
+      return editorManager.activeFile.content;
+    }
+  } catch { /* ignore */ }
+  return null;
 }
 
 function renderToIframe(
@@ -35,7 +61,10 @@ function renderToIframe(
 ): void {
   const { iframe, pip } = elements;
   const vp = VIEWPORTS[state.viewport];
-  const content = `<!DOCTYPE html>
+
+  let content = html;
+  if (!/<html/i.test(html)) {
+    content = `<!DOCTYPE html>
 <html>
 <head>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -48,20 +77,21 @@ function renderToIframe(
 ${html}
 </body>
 </html>`;
+  }
 
   iframe.srcdoc = content;
-  if (state.maximized) {
-    iframe.style.width = "100%";
-    iframe.style.height = "100%";
-  } else {
-    iframe.style.width = `${vp.width}px`;
-    iframe.style.height = "100%";
-    pip.style.width = `${vp.width + 2}px`;
+  iframe.style.display = "block";
+  iframe.style.width = "100%";
+  iframe.style.height = "100%";
+
+  if (!state.maximized) {
+    const targetW = Math.min(vp.width, window.innerWidth - 20);
+    pip.style.width = `${targetW}px`;
   }
 }
 
 function showEmptyState(elements: PipElements, show: boolean): void {
   const empty = elements.pip.querySelector(".pip-empty-state") as HTMLElement;
-  if (empty) empty.style.display = show ? "" : "none";
-  if (elements.iframe) elements.iframe.style.display = show ? "none" : "";
+  if (empty) empty.style.display = show ? "flex" : "none";
+  if (elements.iframe) elements.iframe.style.display = show ? "none" : "block";
 }

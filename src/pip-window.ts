@@ -7,7 +7,7 @@ export function createPipWindow(state: PipState): PipElements | null {
 
   const pip = document.createElement("div");
   pip.id = "web-preview-pip";
-  pip.style.display = "none";
+  pip.style.display = state.visible ? "flex" : "none";
   pip.innerHTML = `
     <style>${getStyles()}</style>
     <div class="pip-header">
@@ -35,6 +35,13 @@ export function createPipWindow(state: PipState): PipElements | null {
         <p>Open an HTML file to preview</p>
       </div>
     </div>
+    <div class="pip-resizer pip-resizer-r" data-dir="r"></div>
+    <div class="pip-resizer pip-resizer-b" data-dir="b"></div>
+    <div class="pip-resizer pip-resizer-se" data-dir="se" title="Resize">
+      <svg width="10" height="10" viewBox="0 0 10 10">
+        <path d="M6 10L10 6M2 10L10 2" stroke="#6c7086" stroke-width="1.5" stroke-linecap="round"/>
+      </svg>
+    </div>
   `;
 
   document.body.appendChild(pip);
@@ -46,7 +53,7 @@ export function createPipWindow(state: PipState): PipElements | null {
     title: pip.querySelector(".pip-title") as HTMLElement,
   };
 
-  if (state.visible) pip.style.display = "";
+  pip.style.display = state.visible ? "flex" : "none";
   if (state.minimized) pip.classList.add("minimized");
   if (state.maximized) pip.classList.add("maximized");
 

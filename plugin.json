@@ -2,7 +2,7 @@
   "id": "acode.plugin.webpreviewpip",
   "name": "Web Preview PiP",
   "main": "main.js",
-  "version": "1.0.6",
+  "version": "1.1.0",
   "readme": "readme.md",
   "changelogs": "changelogs.md",
   "icon": "icon.png",
@@ -12,7 +12,7 @@
   "keywords": ["preview", "web", "html", "pip", "live", "picture-in-picture"],
   "price": 0,
   "author": {
-    "name": "ihsannyy",
-    "github": "ihsannyy"
+    "name": "User",
+    "github": ""
   }
 }

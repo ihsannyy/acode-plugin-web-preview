@@ -1,40 +1,25 @@
 import type { PipElements, PipState } from "./types";
+import { refreshPreview } from "./preview";
 
-export function registerHeaderButton(
+export function registerSideButton(
   toggle: () => void
-): { remove: () => void } | null {
+): { show: () => void; hide: () => void } | null {
   try {
-    const existingBtn = document.querySelector('[action="web-preview"]');
-    if (existingBtn) existingBtn.remove();
-
-    const btn = document.createElement("span");
-    btn.className = "icon eye";
-    btn.setAttribute("action", "web-preview");
-    btn.title = "Web Preview PiP";
-    btn.style.cssText = "padding:0 8px;cursor:pointer;user-select:none;";
-
-    btn.onclick = (e) => {
-      e.preventDefault();
-      e.stopPropagation();
-      toggle();
-    };
-
-    const header = document.querySelector("header");
-    if (!header) {
-      console.warn("Web Preview PiP: No header found");
-      return null;
+    const SideButton = (window as any).acode.require("sideButton");
+    if (!SideButton) return null;
+    const btn = SideButton({
+      text: "Web Preview",
+      icon: "eye",
+      onclick: toggle,
+      action: toggle,
+      backgroundColor: "var(--accent-color, #89b4fa)",
+      textColor: "#1e1e2e",
+    });
+    if (btn && typeof btn.show === "function") {
+      btn.show();
     }
-
-    const tail = header.querySelector(".tail");
-    if (tail) {
-      tail.insertBefore(btn, tail.firstChild);
-    } else {
-      header.appendChild(btn);
-    }
-
-    return { remove: () => btn.remove() };
-  } catch (e) {
-    console.error("Web Preview PiP: Failed to create header button", e);
+    return btn;
+  } catch {
     return null;
   }
 }
@@ -55,21 +40,21 @@ export function registerCommands(
     commands.addCommand({
       name: "web-preview-pip.toggle",
       description: "Web Preview PiP: Toggle Preview",
-      bindKey: { win: "Ctrl-Shift-V", mac: "Command-Shift-V" },
+      bindKey: { win: "Ctrl-Shift-P", mac: "Command-Shift-P" },
       exec: callbacks.onToggle,
     });
 
     commands.addCommand({
       name: "web-preview-pip.close",
       description: "Web Preview PiP: Force Close",
-      bindKey: { win: "Ctrl-Shift-Q", mac: "Command-Shift-Q" },
+      bindKey: { win: "Ctrl-Shift-X", mac: "Command-Shift-X" },
       exec: callbacks.onForceClose,
     });
 
     commands.addCommand({
       name: "web-preview-pip.reset",
       description: "Web Preview PiP: Reset & Close",
-      bindKey: { win: "Ctrl-Shift-;", mac: "Command-Shift-;" },
+      bindKey: { win: "Ctrl-Shift-R", mac: "Command-Shift-R" },
       exec: callbacks.onForceReset,
     });
   } catch { /* commands not available */ }

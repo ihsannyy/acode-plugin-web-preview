@@ -2,7 +2,7 @@
 
 Picture-in-Picture live web preview plugin for [Acode](https://acode.app) editor.
 
-![Version](https://img.shields.io/badge/version-1.0.3-blue)
+![Version](https://img.shields.io/badge/version-1.1.0-blue)
 ![License](https://img.shields.io/badge/license-MIT-green)
 ![Acode](https://img.shields.io/badge/Acode-v290+-orange)
 

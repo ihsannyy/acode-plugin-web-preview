@@ -13,18 +13,19 @@ export function getStyles(): string {
       transition: border-radius 0.2s;
       min-width: 200px;
       min-height: 150px;
-      display: none;
+      display: flex;
+      flex-direction: column;
     }
     #web-preview-pip.minimized {
-      width: 180px !important;
+      width: 200px !important;
       height: auto !important;
-      min-width: 180px;
+      min-width: 200px;
       min-height: auto;
       resize: none;
       border-radius: 8px;
     }
     #web-preview-pip.minimized .pip-body {
-      display: none;
+      display: none !important;
     }
     #web-preview-pip.maximized {
       width: 100vw !important;
@@ -44,6 +45,8 @@ export function getStyles(): string {
       cursor: move;
       user-select: none;
       -webkit-user-select: none;
+      height: 34px;
+      box-sizing: border-box;
     }
     .pip-title {
       flex: 1;
@@ -108,26 +111,72 @@ export function getStyles(): string {
     .pip-body {
       position: relative;
       width: 100%;
-      height: calc(100% - 34px);
-    }
-    #web-preview-pip.maximized .pip-body {
-      height: calc(100vh - 34px);
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+      background: #ffffff;
     }
     #pip-iframe {
       width: 100%;
       height: 100%;
       border: none;
       background: #fff;
+      flex: 1;
     }
     .pip-empty-state {
       position: absolute;
-      top: 50%;
-      left: 50%;
-      transform: translate(-50%, -50%);
+      inset: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
       text-align: center;
       color: #6c7086;
       font-size: 13px;
+      background: #1e1e2e;
+      padding: 16px;
       pointer-events: none;
+    }
+    .pip-resizer {
+      position: absolute;
+      user-select: none;
+      -webkit-user-select: none;
+      z-index: 10;
+      touch-action: none;
+    }
+    .pip-resizer-r {
+      top: 0;
+      right: 0;
+      width: 10px;
+      height: 100%;
+      cursor: ew-resize;
+    }
+    .pip-resizer-b {
+      bottom: 0;
+      left: 0;
+      width: 100%;
+      height: 10px;
+      cursor: ns-resize;
+    }
+    .pip-resizer-se {
+      bottom: 0;
+      right: 0;
+      width: 18px;
+      height: 18px;
+      cursor: nwse-resize;
+      z-index: 11;
+      display: flex;
+      align-items: flex-end;
+      justify-content: flex-end;
+      padding: 3px;
+    }
+    #web-preview-pip.is-dragging #pip-iframe,
+    #web-preview-pip.is-resizing #pip-iframe {
+      pointer-events: none !important;
+    }
+    #web-preview-pip.minimized .pip-resizer,
+    #web-preview-pip.maximized .pip-resizer {
+      display: none !important;
     }
   `;
 }
