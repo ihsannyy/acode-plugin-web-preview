@@ -1,28 +1,39 @@
 import type { PipElements, PipState } from "./types";
-import { refreshPreview } from "./preview";
 
-export function registerSideButton(
+export function registerSidebarApp(
   toggle: () => void
-): { show: () => void; hide: () => void } | null {
+): { remove: () => void } | null {
   try {
     const acode = (window as any).acode;
     if (!acode) return null;
-    const SideButton = acode.require("sidebutton");
-    if (!SideButton) return null;
-    const btn = SideButton({
-      text: "Web Preview",
-      icon: "eye",
-      onclick: toggle,
-      backgroundColor: "var(--accent-color, #89b4fa)",
-      textColor: "#1e1e2e",
-    });
-    if (btn) {
-      btn.show();
-      return btn;
-    }
-    return null;
+    const sideBarApps = acode.require("sidebarApps");
+    if (!sideBarApps) return null;
+
+    sideBarApps.add(
+      "eye",
+      "web-preview-pip",
+      "Web Preview",
+      (container: HTMLElement) => {
+        container.innerHTML = `<div style="padding:8px;text-align:center;cursor:pointer;">
+          <span class="icon eye" style="font-size:24px;"></span>
+          <div style="font-size:11px;margin-top:4px;">Preview</div>
+        </div>`;
+        container.style.cursor = "pointer";
+        container.addEventListener("click", toggle);
+      },
+      false,
+      () => {}
+    );
+
+    return {
+      remove: () => {
+        try {
+          sideBarApps.remove("web-preview-pip");
+        } catch { /* ignore */ }
+      },
+    };
   } catch (e) {
-    console.error("Web Preview PiP: Failed to create side button", e);
+    console.error("Web Preview PiP: Failed to register sidebar app", e);
     return null;
   }
 }
