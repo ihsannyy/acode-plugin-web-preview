@@ -2,28 +2,14 @@ import type { PipElements, PipState } from "./types";
 import { refreshPreview } from "./preview";
 
 export function registerSideButton(
-  toggle: () => void
+  _toggle: () => void
 ): { show: () => void; hide: () => void } | null {
-  try {
-    const SideButton = (window as any).acode.require("sideButton");
-    if (!SideButton) return null;
-    const btn = SideButton({
-      text: "Preview",
-      icon: "",
-      onclick: toggle,
-      backgroundColor: "#89b4fa",
-      textColor: "#1e1e2e",
-    });
-    btn.show();
-    return btn;
-  } catch {
-    return null;
-  }
+  return null;
 }
 
 export function registerCommands(
-  elements: PipElements,
-  state: PipState,
+  _elements: PipElements,
+  _state: PipState,
   callbacks: {
     onToggle: () => void;
     onForceClose: () => void;
