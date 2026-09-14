@@ -7,6 +7,8 @@ export interface PipState {
   width: number;
   height: number;
   viewport: "mobile" | "tablet" | "desktop";
+  urlMode: boolean;
+  url: string;
 }
 
 export interface PipElements {
@@ -14,6 +16,9 @@ export interface PipElements {
   iframe: HTMLIFrameElement;
   header: HTMLElement;
   title: HTMLElement;
+  urlInput: HTMLInputElement;
+  urlBar: HTMLElement;
+  vpSwitch: HTMLElement;
 }
 
 export interface ViewportSize {

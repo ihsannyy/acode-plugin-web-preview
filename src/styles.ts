@@ -49,13 +49,41 @@ export function getStyles(): string {
       box-sizing: border-box;
     }
     .pip-title {
-      flex: 1;
       font-size: 11px;
       font-weight: 600;
       white-space: nowrap;
-      overflow: hidden;
-      text-overflow: ellipsis;
       color: #a6adc8;
+    }
+    .pip-url-bar {
+      display: flex;
+      flex: 1;
+      gap: 2px;
+      align-items: center;
+      min-width: 60px;
+    }
+    .pip-url-input {
+      width: 100%;
+      background: #313244;
+      border: 1px solid #45475a;
+      border-radius: 4px;
+      color: #cdd6f4;
+      font-size: 11px;
+      padding: 2px 6px;
+      outline: none;
+      font-family: inherit;
+      min-width: 0;
+      height: 22px;
+    }
+    .pip-url-input:focus {
+      border-color: #89b4fa;
+    }
+    .pip-url-input::placeholder {
+      color: #6c7086;
+    }
+    .pip-url-go {
+      font-size: 12px !important;
+      width: 20px !important;
+      height: 20px !important;
     }
     .pip-viewport-switch {
       display: flex;

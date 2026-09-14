@@ -29,11 +29,14 @@ class WebPreviewPip {
       onMinimize: () => { toggleMinimize(this.elements!, this.state); saveState(this.state); },
       onMaximize: () => { toggleMaximize(this.elements!, this.state); saveState(this.state); },
       onClose: () => this.hide(),
+      onSaveState: () => saveState(this.state),
+      onRefresh: () => refreshPreview(this.elements!, this.state),
     });
     setupViewport(this.elements, this.state, () => {
       saveState(this.state);
       refreshPreview(this.elements!, this.state);
     });
+    this.setupUrlBar();
     this.cleanupListeners = attachEditorListeners(this.elements, this.state);
     this.sideButton = registerSideButton(() => this.toggle());
     registerCommands(this.elements, this.state, {
@@ -79,6 +82,79 @@ class WebPreviewPip {
   forceReset(): void {
     this.state = resetState();
     this.forceClose();
+  }
+
+  private setupUrlBar(): void {
+    if (!this.elements) return;
+    const { urlInput, urlBar, vpSwitch, pip } = this.elements;
+
+    const urlToggle = pip.querySelector(".pip-url-go");
+    const editorBtn = pip.querySelector(".pip-url-editor");
+    const toggleBtn = pip.querySelector(".pip-url-toggle");
+
+    const applyUrlMode = () => {
+      urlBar.classList.toggle("active", this.state.urlMode);
+      vpSwitch.classList.toggle("hidden", this.state.urlMode);
+      if (this.state.urlMode) {
+        urlInput.value = this.state.url;
+        urlInput.focus();
+      } else {
+        refreshPreview(this.elements!, this.state);
+      }
+    };
+
+    const showEmptyStateLocal = (show: boolean) => {
+      if (!this.elements) return;
+      const empty = this.elements.pip.querySelector(".pip-empty-state") as HTMLElement;
+      if (empty) empty.style.display = show ? "flex" : "none";
+      if (this.elements.iframe) this.elements.iframe.style.display = show ? "none" : "block";
+    };
+
+    const loadUrl = () => {
+      let url = urlInput.value.trim();
+      if (!url) return;
+      if (!/^https?:\/\//i.test(url)) {
+        if (/^(localhost|127\.0\.0\.1|0\.0\.0\.0)/i.test(url)) {
+          url = "http://" + url;
+        } else {
+          url = "https://" + url;
+        }
+      }
+      this.state.url = url;
+      saveState(this.state);
+      if (this.elements) {
+        this.elements.iframe.srcdoc = "";
+        this.elements.iframe.src = url;
+        showEmptyStateLocal(false);
+      }
+    };
+
+    toggleBtn?.addEventListener("click", () => {
+      this.state.urlMode = !this.state.urlMode;
+      applyUrlMode();
+      saveState(this.state);
+    });
+
+    editorBtn?.addEventListener("click", () => {
+      this.state.urlMode = false;
+      applyUrlMode();
+      saveState(this.state);
+    });
+
+    urlInput.addEventListener("keydown", (e) => {
+      if (e.key === "Enter") {
+        e.preventDefault();
+        loadUrl();
+      }
+      e.stopPropagation();
+    });
+
+    urlInput.addEventListener("keyup", (e) => e.stopPropagation());
+    urlInput.addEventListener("keypress", (e) => e.stopPropagation());
+
+    urlToggle?.addEventListener("click", loadUrl);
+
+    if (this.state.urlMode) applyUrlMode();
   }
 }
 

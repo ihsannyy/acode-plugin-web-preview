@@ -11,6 +11,8 @@ const DEFAULT_STATE: PipState = {
   width: 350,
   height: 250,
   viewport: "mobile",
+  urlMode: false,
+  url: "http://localhost:3000",
 };
 
 export function loadState(): PipState {
