@@ -23,21 +23,21 @@ export function registerCommands(
     commands.addCommand({
       name: "web-preview-pip.toggle",
       description: "Web Preview PiP: Toggle Preview",
-      bindKey: { win: "Ctrl-Shift-P", mac: "Command-Shift-P" },
+      bindKey: { win: "Ctrl-Shift-V", mac: "Command-Shift-V" },
       exec: callbacks.onToggle,
     });
 
     commands.addCommand({
       name: "web-preview-pip.close",
       description: "Web Preview PiP: Force Close",
-      bindKey: { win: "Ctrl-Shift-X", mac: "Command-Shift-X" },
+      bindKey: { win: "Ctrl-Shift-Q", mac: "Command-Shift-Q" },
       exec: callbacks.onForceClose,
     });
 
     commands.addCommand({
       name: "web-preview-pip.reset",
       description: "Web Preview PiP: Reset & Close",
-      bindKey: { win: "Ctrl-Shift-R", mac: "Command-Shift-R" },
+      bindKey: { win: "Ctrl-Shift-;", mac: "Command-Shift-;" },
       exec: callbacks.onForceReset,
     });
   } catch { /* commands not available */ }

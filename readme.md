@@ -45,9 +45,9 @@ Then install the generated `plugin.zip` via Acode Plugin Manager.
 
 | Shortcut | Action |
 |----------|--------|
-| `Ctrl+Shift+P` | Toggle preview window |
-| `Ctrl+Shift+X` | Force close preview |
-| `Ctrl+Shift+R` | Reset & close (fix bugs) |
+| `Ctrl+Shift+V` | Toggle preview window |
+| `Ctrl+Shift+Q` | Force close preview |
+| `Ctrl+Shift+;` | Reset & close (fix bugs) |
 
 ### Viewport Modes
 
