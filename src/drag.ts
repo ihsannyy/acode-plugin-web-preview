@@ -16,7 +16,7 @@ export function setupDrag(
 
   // --- MOVE DRAGGING ---
   const onMoveStart = (clientX: number, clientY: number) => {
-    if (state.maximized || state.minimized) return;
+    if (state.maximized || state.minimized || state.fullscreen) return;
     isDragging = true;
     pip.classList.add("is-dragging");
     startPos.x = clientX - state.x;
@@ -39,7 +39,7 @@ export function setupDrag(
 
   // --- RESIZE DRAGGING ---
   const onResizeStart = (clientX: number, clientY: number, dir: "se" | "r" | "b") => {
-    if (state.maximized || state.minimized) return;
+    if (state.maximized || state.minimized || state.fullscreen) return;
     isResizing = true;
     resizeDir = dir;
     pip.classList.add("is-resizing");
@@ -119,7 +119,7 @@ export function setupDrag(
 
 export function applyPosition(elements: PipElements, state: PipState): void {
   const { pip } = elements;
-  if (state.maximized) {
+  if (state.maximized || state.fullscreen) {
     pip.style.top = "0";
     pip.style.left = "0";
     pip.style.width = "100vw";

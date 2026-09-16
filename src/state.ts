@@ -6,13 +6,19 @@ const DEFAULT_STATE: PipState = {
   visible: false,
   minimized: false,
   maximized: false,
+  fullscreen: false,
   x: 20,
   y: 80,
   width: 350,
   height: 250,
   viewport: "mobile",
+  customViewportWidth: 480,
+  zoom: 100,
   urlMode: false,
   url: "",
+  consoleOpen: false,
+  urlHistory: [],
+  urlHistoryIndex: -1,
 };
 
 export function loadState(): PipState {
@@ -28,6 +34,7 @@ export function loadState(): PipState {
   state.visible = false;
   state.minimized = false;
   state.maximized = false;
+  state.fullscreen = false;
 
   const maxW = window.innerWidth - 20;
   const maxH = window.innerHeight - 20;
@@ -35,6 +42,10 @@ export function loadState(): PipState {
   state.height = Math.max(150, Math.min(state.height || 250, maxH));
   state.x = Math.max(0, Math.min(state.x || 20, maxW - 100));
   state.y = Math.max(0, Math.min(state.y || 80, maxH - 50));
+  state.zoom = Math.max(50, Math.min(state.zoom || 100, 200));
+  state.customViewportWidth = Math.max(200, Math.min(state.customViewportWidth || 480, 1920));
+  if (!Array.isArray(state.urlHistory)) state.urlHistory = [];
+  if (typeof state.urlHistoryIndex !== "number") state.urlHistoryIndex = -1;
 
   return state;
 }

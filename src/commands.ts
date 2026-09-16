@@ -1,5 +1,4 @@
 import type { PipElements, PipState } from "./types";
-import { refreshPreview } from "./preview";
 
 export function registerSideButton(
   toggle: () => void
@@ -31,6 +30,10 @@ export function registerCommands(
     onToggle: () => void;
     onForceClose: () => void;
     onForceReset: () => void;
+    onZoomIn: () => void;
+    onZoomOut: () => void;
+    onToggleConsole: () => void;
+    onFullscreen: () => void;
   }
 ): void {
   try {
@@ -56,6 +59,34 @@ export function registerCommands(
       description: "Web Preview PiP: Reset & Close",
       bindKey: { win: "Ctrl-Shift-R", mac: "Command-Shift-R" },
       exec: callbacks.onForceReset,
+    });
+
+    commands.addCommand({
+      name: "web-preview-pip.zoomIn",
+      description: "Web Preview PiP: Zoom In",
+      bindKey: { win: "Ctrl-Shift-=", mac: "Command-Shift-=" },
+      exec: callbacks.onZoomIn,
+    });
+
+    commands.addCommand({
+      name: "web-preview-pip.zoomOut",
+      description: "Web Preview PiP: Zoom Out",
+      bindKey: { win: "Ctrl-Shift--", mac: "Command-Shift--" },
+      exec: callbacks.onZoomOut,
+    });
+
+    commands.addCommand({
+      name: "web-preview-pip.console",
+      description: "Web Preview PiP: Toggle Console",
+      bindKey: { win: "Ctrl-Shift-`", mac: "Command-Shift-`" },
+      exec: callbacks.onToggleConsole,
+    });
+
+    commands.addCommand({
+      name: "web-preview-pip.fullscreen",
+      description: "Web Preview PiP: Toggle Fullscreen",
+      bindKey: { win: "F11", mac: "F11" },
+      exec: callbacks.onFullscreen,
     });
   } catch { /* commands not available */ }
 }

@@ -12,17 +12,15 @@ export function refreshPreview(
   const activeFile = editorManager?.activeFile;
   const filename = activeFile?.filename || activeFile?.name || "";
 
-  // Priority 1: If NOT in urlMode or URL is empty, default to active HTML file preview!
   if (!state.urlMode || !state.url.trim()) {
     if (urlInput && document.activeElement !== urlInput) {
       urlInput.value = "";
-      urlInput.placeholder = filename ? `📄 ${filename}` : "Enter URL (or leave empty for HTML file)...";
+      urlInput.placeholder = filename ? `${filename}` : "Enter URL or leave empty for HTML file...";
     }
     renderActiveFile(elements, state, editorManager, activeFile, filename);
     return;
   }
 
-  // Priority 2: URL mode active with valid URL
   if (urlInput && document.activeElement !== urlInput) {
     urlInput.value = state.url;
   }
@@ -37,7 +35,7 @@ function renderActiveFile(
   filename: string
 ): void {
   if (!editorManager || !activeFile) {
-    showEmptyState(elements, true, "Open an HTML file to preview");
+    showEmptyState(elements, true);
     return;
   }
 
@@ -51,11 +49,10 @@ function renderActiveFile(
   );
 
   if (!isHtmlExtension && !isHtmlContent) {
-    showEmptyState(elements, true, "Open an HTML file to preview");
+    showEmptyState(elements, true);
     return;
   }
 
-  // Extract base URI for relative assets (CSS, JS, images)
   let baseUri = "";
   const uri = activeFile.uri || activeFile.location || "";
   if (uri && uri.includes("/")) {
@@ -63,6 +60,7 @@ function renderActiveFile(
   }
 
   showEmptyState(elements, false);
+  showLoading(elements, true);
   renderToIframe(elements, state, content || "", baseUri);
 }
 
@@ -71,7 +69,7 @@ function renderUrl(elements: PipElements, state: PipState): void {
   let rawUrl = (state.url || "").trim();
 
   if (!rawUrl) {
-    showEmptyState(elements, true, "Enter a URL to preview (e.g. http://localhost:3000)");
+    showEmptyState(elements, true);
     return;
   }
 
@@ -81,8 +79,8 @@ function renderUrl(elements: PipElements, state: PipState): void {
   }
 
   showEmptyState(elements, false);
+  showLoading(elements, true);
 
-  // CRITICAL: Must remove srcdoc so browser renders iframe.src!
   iframe.removeAttribute("srcdoc");
 
   if (iframe.src !== targetUrl) {
@@ -115,6 +113,19 @@ function getEditorContent(editorManager: any): string | null {
   return null;
 }
 
+export function getEditorContentForFile(activeFile: any): string | null {
+  if (!activeFile) return null;
+  try {
+    if (typeof activeFile.session?.getValue === "function") {
+      return activeFile.session.getValue();
+    }
+    if (typeof activeFile.content === "string") {
+      return activeFile.content;
+    }
+  } catch { /* ignore */ }
+  return null;
+}
+
 function renderToIframe(
   elements: PipElements,
   state: PipState,
@@ -124,7 +135,6 @@ function renderToIframe(
   const { iframe, pip } = elements;
   const vp = VIEWPORTS[state.viewport];
 
-  // CRITICAL: Must remove src so browser renders iframe.srcdoc!
   iframe.removeAttribute("src");
 
   let content = html;
@@ -153,23 +163,83 @@ ${html}
 
   iframe.srcdoc = content;
   iframe.style.display = "block";
-  iframe.style.width = "100%";
-  iframe.style.height = "100%";
 
-  if (!state.maximized) {
-    const targetW = Math.min(vp.width, window.innerWidth - 20);
-    pip.style.width = `${targetW}px`;
+  if (!state.maximized && !state.fullscreen) {
+    let targetW: number;
+    if (state.viewport === "custom") {
+      targetW = Math.min(state.customViewportWidth + 40, window.innerWidth - 20);
+    } else {
+      targetW = Math.min(vp.width + 40, window.innerWidth - 20);
+    }
+    pip.style.width = targetW + "px";
+  }
+
+  const zoom = state.zoom || 100;
+  if (zoom !== 100) {
+    setTimeout(function() { applyZoom(elements, state); }, 50);
   }
 }
 
-function showEmptyState(elements: PipElements, show: boolean, message?: string): void {
+function showEmptyState(elements: PipElements, show: boolean): void {
   const empty = elements.pip.querySelector(".pip-empty-state") as HTMLElement;
-  if (empty) {
-    empty.style.display = show ? "flex" : "none";
-    if (message) {
-      const p = empty.querySelector("p");
-      if (p) p.textContent = message;
-    }
-  }
+  if (empty) empty.style.display = show ? "flex" : "none";
   if (elements.iframe) elements.iframe.style.display = show ? "none" : "block";
+}
+
+export function showLoading(elements: PipElements, show: boolean): void {
+  if (elements.loadingBar) {
+    elements.loadingBar.classList.toggle("active", show);
+  }
+}
+
+export function applyZoom(elements: PipElements, state: PipState): void {
+  const zoom = state.zoom || 100;
+  const scale = zoom / 100;
+  const { iframe, pip, zoomLabel } = elements;
+
+  if (zoomLabel) zoomLabel.textContent = zoom + "%";
+
+  const body = pip.querySelector(".pip-body") as HTMLElement;
+  if (!body) return;
+
+  if (scale !== 1) {
+    body.style.overflow = "hidden";
+    iframe.style.transform = "scale(" + scale + ")";
+    iframe.style.transformOrigin = "top left";
+    iframe.style.width = (100 / scale) + "%";
+    iframe.style.height = (100 / scale) + "%";
+  } else {
+    iframe.style.transform = "";
+    iframe.style.transformOrigin = "";
+    iframe.style.width = "100%";
+    iframe.style.height = "100%";
+    body.style.overflow = "";
+  }
+}
+
+export function injectJsToIframe(elements: PipElements, jsCode: string): void {
+  if (!elements.iframe?.contentDocument) return;
+  try {
+    const iframeDoc = elements.iframe.contentDocument;
+    let scriptEl = iframeDoc.getElementById("acode-hot-js");
+    if (scriptEl) scriptEl.remove();
+    scriptEl = iframeDoc.createElement("script");
+    scriptEl.id = "acode-hot-js";
+    scriptEl.textContent = jsCode;
+    iframeDoc.head.appendChild(scriptEl);
+  } catch { /* cross-origin or other issue */ }
+}
+
+export function injectCssToIframe(elements: PipElements, cssCode: string): void {
+  if (!elements.iframe?.contentDocument) return;
+  try {
+    const iframeDoc = elements.iframe.contentDocument;
+    let styleEl = iframeDoc.getElementById("acode-hot-css");
+    if (!styleEl) {
+      styleEl = iframeDoc.createElement("style");
+      styleEl.id = "acode-hot-css";
+      iframeDoc.head.appendChild(styleEl);
+    }
+    styleEl.textContent = cssCode;
+  } catch { /* cross-origin or other issue */ }
 }
