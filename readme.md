@@ -4,7 +4,7 @@
 
 **Live Picture-in-Picture Web Preview Plugin for [Acode Editor](https://acode.app)**
 
-[![Version](https://img.shields.io/badge/version-2.0.0-89b4fa?style=for-the-badge&logo=semver)](plugin.json)
+[![Version](https://img.shields.io/badge/version-2.0.1-89b4fa?style=for-the-badge&logo=semver)](plugin.json)
 [![Acode](https://img.shields.io/badge/Acode-v290+-fab387?style=for-the-badge&logo=android)](https://acode.app)
 [![License](https://img.shields.io/badge/license-MIT-a6e3a1?style=for-the-badge)](LICENSE)
 

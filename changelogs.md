@@ -1,6 +1,6 @@
 # Changelog
 
-## 2.0.0
+## 2.0.1
 
 - 🐛 **Fixed**: Viewport SVG icons for Mobile, Tablet, Desktop, and Eye logo buttons in the window header.
 - 🎨 **Enhanced**: Added explicit dimensions and responsive CSS styling for viewport SVG icons.

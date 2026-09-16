@@ -2,7 +2,7 @@
   "id": "acode.plugin.webpreviewpip",
   "name": "Web Preview PiP",
   "main": "main.js",
-  "version": "2.0.0",
+  "version": "2.0.1",
   "readme": "readme.md",
   "changelogs": "changelogs.md",
   "icon": "icon.png",

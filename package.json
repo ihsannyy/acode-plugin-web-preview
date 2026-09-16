@@ -1,6 +1,6 @@
 {
   "name": "acode-plugin-web-preview-pip",
-  "version": "2.0.0",
+  "version": "2.0.1",
   "description": "Picture-in-Picture live web preview for Acode editor",
   "main": "dist/main.js",
   "repository": "",
