@@ -31,17 +31,17 @@ A modern, floating Picture-in-Picture (PiP) web preview plugin for **Acode Edito
 
 ## ⌨️ Shortcuts & Commands
 
-You can trigger actions via keyboard shortcuts or Acode's Command Palette (`Ctrl+Shift+P`):
+You can trigger actions via external keyboard shortcuts or Acode's Command Palette:
 
-| Shortcut (Win / Linux) | Shortcut (macOS) | Action |
-| :--- | :--- | :--- |
-| `Ctrl + Shift + P` | `Cmd + Shift + P` | Toggle Web Preview PiP |
-| `Ctrl + Shift + X` | `Cmd + Shift + X` | Force Close Window |
-| `Ctrl + Shift + R` | `Cmd + Shift + R` | Reset Position & State |
-| `Ctrl + Shift + =` | `Cmd + Shift + =` | Zoom In (+10%) |
-| `Ctrl + Shift + -` | `Cmd + Shift + -` | Zoom Out (-10%) |
-| `Ctrl + Shift + \`` | `Cmd + Shift + \`` | Toggle In-Window Console |
-| `F11` | `F11` | Toggle Fullscreen Mode |
+| Shortcut | Action |
+| :--- | :--- |
+| `Ctrl + Shift + P` | Toggle Web Preview PiP |
+| `Ctrl + Shift + X` | Force Close Window |
+| `Ctrl + Shift + R` | Reset Position & Window State |
+| `Ctrl + Shift + =` | Zoom In (+10%) |
+| `Ctrl + Shift + -` | Zoom Out (-10%) |
+| `Ctrl + Shift + \`` | Toggle In-Window Console |
+| `F11` | Toggle Fullscreen Mode |
 
 <br/>
 
