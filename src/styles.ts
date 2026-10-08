@@ -338,7 +338,7 @@ export function getStyles(): string {
       flex-direction: column;
       background: #11111b;
       border-top: 1px solid #313244;
-      max-height: 140px;
+      height: 120px;
       flex-shrink: 0;
     }
     .pip-console.open {

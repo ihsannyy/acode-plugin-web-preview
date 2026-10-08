@@ -73,5 +73,6 @@ const buildConfig = {
     console.log("Building for production...");
     await esbuild.build(buildConfig);
     console.log("Production build complete.");
+    setTimeout(() => process.exit(0), 500);
   }
 })();

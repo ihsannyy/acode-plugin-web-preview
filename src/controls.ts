@@ -1,6 +1,7 @@
 import type { PipElements, PipState } from "./types";
 import { applyPosition } from "./drag";
 import { applyZoom, showLoading } from "./preview";
+import { resetConsole } from "./listeners";
 
 export function setupControls(
   elements: PipElements,
@@ -108,8 +109,7 @@ export function setupControls(
   pip.querySelector(".pip-console-toggle")?.addEventListener("click", callbacks.onConsoleToggle);
   pip.querySelector(".pip-console-close")?.addEventListener("click", callbacks.onConsoleToggle);
   pip.querySelector(".pip-console-clear")?.addEventListener("click", () => {
-    elements.consoleBody.innerHTML = "";
-    updateConsoleCount(elements, 0);
+    resetConsole(elements);
   });
 
   pip.querySelector(".pip-zoom-in")?.addEventListener("click", () => {

@@ -1,5 +1,13 @@
 # Changelog
 
+## 2.1.0
+
+- 📝 **Feature**: Added Markdown (`.md`, `.markdown`) live preview rendering with Catppuccin dark theme.
+- 🎨 **Feature**: Automatic local CSS resolution & inlining for `<link rel="stylesheet">` tags from open editor tabs.
+- ⚡ **Feature**: Real-time CSS and JS hot reloading as you type.
+- 💻 **Console**: Direct synchronous bridge console logger (`window.parent.__acode_pip_log`) for immediate log interception.
+- 🐛 **Fixed**: Iframe drag auto-resizing and percentage scaling.
+
 ## 2.0.1
 
 - 🐛 **Fixed**: Viewport SVG icons for Mobile, Tablet, Desktop, and Eye logo buttons in the window header.

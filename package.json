@@ -7,7 +7,8 @@
   "author": "User",
   "license": "MIT",
   "dependencies": {
-    "acode-plugin-types": "^1.12.9"
+    "acode-plugin-types": "^1.12.9",
+    "marked": "^18.0.14"
   },
   "devDependencies": {
     "esbuild-wasm": "^0.25.0",
@@ -16,7 +17,7 @@
   },
   "scripts": {
     "dev": "node esbuild.config.mjs --serve",
-    "build": "node ./node_modules/typescript/bin/tsc --noEmit && node esbuild.config.mjs",
+    "build": "node ./node_modules/typescript/bin/tsc --noEmit && node ./node_modules/esbuild-wasm/bin/esbuild src/main.ts --bundle --minify --format=iife --target=chrome90 --outfile=dist/main.js && node pack-zip.js",
     "typecheck": "node ./node_modules/typescript/bin/tsc --noEmit"
   }
 }

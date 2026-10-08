@@ -37,6 +37,7 @@ class WebPreviewPip {
       saveState(this.state);
       refreshPreview(this.elements!, this.state);
     });
+    this.setupUrlBar();
     this.cleanupListeners = attachEditorListeners(this.elements, this.state);
     this.sideButton = registerSideButton(() => this.toggle());
     registerCommands(this.elements, this.state, {
@@ -115,6 +116,65 @@ class WebPreviewPip {
     if (!this.elements) return;
     toggleFullscreen(this.elements, this.state);
     saveState(this.state);
+  }
+
+  private setupUrlBar(): void {
+    if (!this.elements) return;
+    const { urlInput, urlBar, pip } = this.elements;
+
+    const urlToggle = pip.querySelector(".pip-url-go");
+    const editorBtn = pip.querySelector(".pip-url-clear");
+
+    const applyUrlMode = () => {
+      urlBar.classList.toggle("active", this.state.urlMode);
+      if (this.state.urlMode) {
+        urlInput.value = this.state.url;
+      } else {
+        refreshPreview(this.elements!, this.state);
+      }
+    };
+
+    const loadUrl = () => {
+      let url = urlInput.value.trim();
+      if (!url) return;
+      if (!/^https?:\/\//i.test(url)) {
+        if (/^(localhost|127\.0\.0\.1|0\.0\.0\.0)/i.test(url)) {
+          url = "http://" + url;
+        } else {
+          url = "https://" + url;
+        }
+      }
+      this.state.url = url;
+      this.state.urlMode = true;
+      saveState(this.state);
+      if (this.elements) {
+        showLoading(this.elements, true);
+        this.elements.iframe.removeAttribute("srcdoc");
+        this.elements.iframe.src = url;
+      }
+    };
+
+    editorBtn?.addEventListener("click", () => {
+      this.state.urlMode = false;
+      this.state.url = "";
+      applyUrlMode();
+      saveState(this.state);
+    });
+
+    urlInput.addEventListener("keydown", (e) => {
+      if (e.key === "Enter") {
+        e.preventDefault();
+        loadUrl();
+      }
+      e.stopPropagation();
+    });
+
+    urlInput.addEventListener("keyup", (e) => e.stopPropagation());
+    urlInput.addEventListener("keypress", (e) => e.stopPropagation());
+
+    urlToggle?.addEventListener("click", loadUrl);
+
+    if (this.state.urlMode) applyUrlMode();
   }
 }
 

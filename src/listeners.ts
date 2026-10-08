@@ -1,5 +1,5 @@
 import type { PipElements, PipState } from "./types";
-import { refreshPreview, injectJsToIframe, injectCssToIframe, showLoading } from "./preview";
+import { refreshPreview, injectJsToIframe, injectCssToIframe, injectMarkdownToIframe, showLoading } from "./preview";
 import { updateConsoleCount } from "./controls";
 
 type Cleanup = () => void;
@@ -44,6 +44,8 @@ export function attachEditorListeners(
       injectCssToIframe(elements, content);
     } else if (/\.js$/i.test(filename) && content) {
       injectJsToIframe(elements, content);
+    } else if (/\.(md|markdown|mkd|mdwn)$/i.test(filename) && content) {
+      injectMarkdownToIframe(elements, content);
     }
   };
 
@@ -112,52 +114,71 @@ function getValue(activeFile: any): string | null {
 function setupConsoleCapture(elements: PipElements, state: PipState): void {
   const iframe = elements.iframe;
 
+  (window as any).__acode_pip_log = (level: string, text: string) => {
+    if (!elements.consoleBody) return;
+
+    const entry = document.createElement("div");
+    entry.className = `pip-console-entry ${level || "log"}`;
+    entry.innerHTML = `
+      <span class="pip-console-icon">${CONSOLE_ICONS[level] || CONSOLE_ICONS.log}</span>
+      <span>${escapeHtml(text).substring(0, 2000)}</span>
+    `;
+    elements.consoleBody.appendChild(entry);
+    elements.consoleBody.scrollTop = elements.consoleBody.scrollHeight;
+
+    consoleEntryCount++;
+    updateConsoleCount(elements, consoleEntryCount);
+  };
+
+  const onMessage = (e: MessageEvent) => {
+    if (e.data && e.data.type === "acode-pip-console") {
+      (window as any).__acode_pip_log?.(e.data.level || "log", e.data.text || "");
+    }
+  };
+
+  window.addEventListener("message", onMessage);
+
   const captureLogs = () => {
     try {
       const iframeWin = iframe.contentWindow as any;
       if (!iframeWin) return;
 
       const origConsole = {
-        log: iframeWin.console.log.bind(iframeWin.console),
-        warn: iframeWin.console.warn.bind(iframeWin.console),
-        error: iframeWin.console.error.bind(iframeWin.console),
-        info: iframeWin.console.info.bind(iframeWin.console),
+        log: iframeWin.console?.log ? iframeWin.console.log.bind(iframeWin.console) : null,
+        warn: iframeWin.console?.warn ? iframeWin.console.warn.bind(iframeWin.console) : null,
+        error: iframeWin.console?.error ? iframeWin.console.error.bind(iframeWin.console) : null,
+        info: iframeWin.console?.info ? iframeWin.console.info.bind(iframeWin.console) : null,
       };
 
-      const addEntry = (level: string, args: any[]) => {
-        if (!state.consoleOpen) return;
-        const text = args.map((a) => {
+      const formatArgs = (args: any[]) => {
+        return args.map((a) => {
+          if (a === null) return "null";
+          if (a === undefined) return "undefined";
           if (typeof a === "object") {
             try { return JSON.stringify(a, null, 2); } catch { return String(a); }
           }
           return String(a);
         }).join(" ");
-
-        const entry = document.createElement("div");
-        entry.className = `pip-console-entry ${level}`;
-        entry.innerHTML = `
-          <span class="pip-console-icon">${CONSOLE_ICONS[level] || CONSOLE_ICONS.log}</span>
-          <span>${escapeHtml(text).substring(0, 500)}</span>
-        `;
-        elements.consoleBody.appendChild(entry);
-        elements.consoleBody.scrollTop = elements.consoleBody.scrollHeight;
-
-        consoleEntryCount++;
-        updateConsoleCount(elements, consoleEntryCount);
       };
 
-      iframeWin.console.log = (...args: any[]) => { origConsole.log(...args); addEntry("log", args); };
-      iframeWin.console.warn = (...args: any[]) => { origConsole.warn(...args); addEntry("warn", args); };
-      iframeWin.console.error = (...args: any[]) => { origConsole.error(...args); addEntry("error", args); };
-      iframeWin.console.info = (...args: any[]) => { origConsole.info(...args); addEntry("info", args); };
+      if (origConsole.log) iframeWin.console.log = (...args: any[]) => { origConsole.log(...args); (window as any).__acode_pip_log?.("log", formatArgs(args)); };
+      if (origConsole.warn) iframeWin.console.warn = (...args: any[]) => { origConsole.warn(...args); (window as any).__acode_pip_log?.("warn", formatArgs(args)); };
+      if (origConsole.error) iframeWin.console.error = (...args: any[]) => { origConsole.error(...args); (window as any).__acode_pip_log?.("error", formatArgs(args)); };
+      if (origConsole.info) iframeWin.console.info = (...args: any[]) => { origConsole.info(...args); (window as any).__acode_pip_log?.("info", formatArgs(args)); };
 
       iframeWin.addEventListener("error", (e: any) => {
-        addEntry("error", [e.message + " at " + (e.filename || "") + ":" + (e.lineno || "")]);
+        (window as any).__acode_pip_log?.("error", (e.message || "Error") + " at " + (e.filename || "").split("/").pop() + ":" + (e.lineno || 0));
       });
     } catch { /* cross-origin */ }
   };
 
   iframe.addEventListener("load", captureLogs);
+}
+
+export function resetConsole(elements: PipElements): void {
+  consoleEntryCount = 0;
+  if (elements.consoleBody) elements.consoleBody.innerHTML = "";
+  updateConsoleCount(elements, 0);
 }
 
 function escapeHtml(str: string): string {
